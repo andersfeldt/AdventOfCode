@@ -1,16 +1,18 @@
 module Day01
 
+let parseChar (c:char) = (c |> int) - ('0' |> int)
+let toPair (x:'t list) = x.[0], x.[1]
 let isEqualPair (x, y) = x = y
 
 let getResultA (s:string) =
     let numbers =
         s.ToCharArray()
         |> Array.toSeq
-        |> Seq.map (fun c -> (c |> int) - ('0' |> int))
+        |> Seq.map parseChar
 
     (Seq.last numbers) :: (Seq.toList numbers)
     |> List.windowed 2
-    |> List.map (fun x -> x.[0], x.[1])
+    |> List.map toPair
     |> List.filter isEqualPair
     |> List.sumBy fst
     |> string
@@ -19,7 +21,7 @@ let getResultB (s:string) =
     let numbers =
         s.ToCharArray()
         |> Array.toList
-        |> List.map (fun c -> (c |> int) - ('0' |> int))
+        |> List.map parseChar
 
     let halfLength = numbers.Length / 2
     let firstHalf = numbers |> List.take halfLength
