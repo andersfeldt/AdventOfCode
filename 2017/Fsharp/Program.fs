@@ -4,6 +4,7 @@ open System.IO
 let dayFuncs d =
     match d with
     | 1 -> Day01.getResult
+    | 2 -> Day02.getResult
     | _ -> failwith "Not implemented yet"
 
 let run (argv:string[]) =
