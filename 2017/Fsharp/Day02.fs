@@ -15,28 +15,25 @@ let getResultA (input:string[]) =
     |> Array.sumBy getDifference
     |> string
 
-let handleArray numbers =
-    let isEvenDivisible small large =
-        if small = large then
-            false
-        else
-            large % small = 0
-
-    let sorted = Array.sort numbers
-    let reversed = Array.rev sorted
-    let existsElement arr divisor = Array.exists (isEvenDivisible divisor) arr
-    let findElement arr divisor = Array.find (isEvenDivisible divisor) arr
-
-    sorted
-    |> Array.filter (existsElement reversed)
-    |> Array.map (fun x -> (findElement reversed x), x)
-    |> Array.map (fun (a, b) -> a / b)
-
 let getResultB (input:string[]) =
+    let handleArray numbers =
+        let isEvenDivisible small large =
+            match small = large with
+            | true  -> false
+            | false -> large % small = 0
+
+        let sorted = Array.sort numbers
+        let reversed = Array.rev sorted
+        let existsElement arr divisor = Array.exists (isEvenDivisible divisor) arr
+        let findElement arr divisor = Array.find (isEvenDivisible divisor) arr
+        let dividePair (a, b) = a / b
+
+        sorted
+        |> Array.filter (existsElement reversed)
+        |> Array.map ((fun x -> (findElement reversed x), x) >> dividePair)
+
     input
-    |> Array.map convertLineToArray
-    |> Array.map handleArray
-    |> Array.concat
+    |> Array.collect (convertLineToArray >> handleArray)
     |> Array.sum
     |> string
 

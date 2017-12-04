@@ -1,7 +1,6 @@
 module Day01
 
 let parseChar (c:char) = (c |> int) - ('0' |> int)
-let toPair (x:'t list) = x.[0], x.[1]
 let isEqualPair (x, y) = x = y
 
 let getResultA (s:string) =
@@ -9,6 +8,8 @@ let getResultA (s:string) =
         s.ToCharArray()
         |> Array.toSeq
         |> Seq.map parseChar
+
+    let toPair (x:'t list) = x.[0], x.[1]
 
     (Seq.last numbers) :: (Seq.toList numbers)
     |> List.windowed 2

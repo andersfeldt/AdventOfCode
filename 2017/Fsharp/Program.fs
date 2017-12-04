@@ -34,7 +34,8 @@ let run (argv:string[]) =
     let readPuzzleInput (day:int) =
         let fileName = sprintf "Day%02i.txt" day
         let path = Path.Combine(__SOURCE_DIRECTORY__, "..", "PuzzleInputs", fileName)
-        File.ReadAllLines(path) |> Array.filter Common.hasContent
+        let hasContent s = not (String.IsNullOrWhiteSpace(s))
+        File.ReadAllLines(path) |> Array.filter hasContent
 
     readPuzzleInput day
     |> selectedFunc
