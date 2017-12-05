@@ -82,8 +82,7 @@ let getResultB number =
     instructions
     |> Seq.scan scanFunc initialState
     |> Seq.find (stoppingCondition number)
-    |> (fun (_, _, value) -> value)
-    |> string
+    |> (fun (_, _, value) -> value |> string)
 
 let getResult part (input:string[]) =
     match part with
