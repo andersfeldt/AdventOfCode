@@ -4,38 +4,36 @@ open System
 
 let getResultA input =
     let isValidPassPhrase (line:string) =
-        let words = line.Split(' ')
+        let words = line.Split(' ') |> List.ofArray
         let uniqueWordCount =
             words
-            |> Seq.ofArray
-            |> Seq.distinct
-            |> Seq.length
-        uniqueWordCount = Array.length words
+            |> List.distinct
+            |> List.length
+        uniqueWordCount = List.length words
 
     input
-    |> Array.filter isValidPassPhrase
-    |> Array.length
-    |> string
+    |> List.filter isValidPassPhrase
+    |> List.length
 
 let getResultB input =
     let isValidPassPhrase (line:string) =
         let words =
             line.Split(' ')
-            |> Array.map (fun s -> Array.sort (s.ToCharArray()) |> String.Concat)
+            |> List.ofArray
+            |> List.map (fun s -> s.ToCharArray() |> Array.sort |> String.Concat)
 
         let uniqueWordCount =
             words
-            |> Seq.ofArray
-            |> Seq.distinct
-            |> Seq.length
-        uniqueWordCount = Array.length words
+            |> List.distinct
+            |> List.length
+        uniqueWordCount = List.length words
 
     input
-    |> Array.filter isValidPassPhrase
-    |> Array.length
-    |> string
+    |> List.filter isValidPassPhrase
+    |> List.length
 
-let getResult part (input:string[]) =
+let getResult part (input:string list) =
     match part with
     | A -> getResultA input
     | B -> getResultB input
+    |> string

@@ -57,7 +57,6 @@ let getResultAB (input:string) =
 let getResultA input =
     getResultAB input
     |> snd
-    |> string
 
 let getResultB input =
     getResultAB input
@@ -65,9 +64,9 @@ let getResultB input =
     |> getResultAB
     |> snd
     |> fun i -> i - 1
-    |> string
 
-let getResult part (input:string[]) =
+let getResult part (input:string list) =
     match part with
     | A -> getResultA input.[0]
     | B -> getResultB input.[0]
+    |> string

@@ -2,42 +2,42 @@ module Day02
 
 open System
 
-let convertLineToArray (s:string) =
+let convertLineToList (s:string) =
     s.Split([|' '; '\t'|], StringSplitOptions.RemoveEmptyEntries)
-    |> Array.map int
+    |> List.ofArray
+    |> List.map int
 
-let getResultA (input:string[]) =
-    let getDifference (line:string) =
-        let array = convertLineToArray line
-        (Array.max array) - (Array.min array)
+let getResultA input =
+    let getDifference line =
+        let list = convertLineToList line
+        (List.max list) - (List.min list)
 
     input
-    |> Array.sumBy getDifference
-    |> string
+    |> List.sumBy getDifference
 
-let getResultB (input:string[]) =
-    let handleArray numbers =
+let getResultB input =
+    let handleList numbers =
         let isEvenDivisible small large =
             match small = large with
             | true  -> false
             | false -> large % small = 0
 
-        let sorted = Array.sort numbers
-        let reversed = Array.rev sorted
-        let existsElement arr divisor = Array.exists (isEvenDivisible divisor) arr
-        let findElement arr divisor = Array.find (isEvenDivisible divisor) arr
+        let sorted = List.sort numbers
+        let reversed = List.rev sorted
+        let existsElement arr divisor = List.exists (isEvenDivisible divisor) arr
+        let findElement arr divisor = List.find (isEvenDivisible divisor) arr
         let dividePair (a, b) = a / b
 
         sorted
-        |> Array.filter (existsElement reversed)
-        |> Array.map ((fun x -> (findElement reversed x), x) >> dividePair)
+        |> List.filter (existsElement reversed)
+        |> List.map ((fun x -> (findElement reversed x), x) >> dividePair)
 
     input
-    |> Array.collect (convertLineToArray >> handleArray)
-    |> Array.sum
-    |> string
+    |> List.collect (convertLineToList >> handleList)
+    |> List.sum
 
-let getResult part (input:string[]) =
+let getResult part (input:string list) =
     match part with
     | A -> getResultA input
     | B -> getResultB input
+    |> string

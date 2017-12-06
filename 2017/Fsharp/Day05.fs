@@ -8,21 +8,22 @@ let getResultAB getNewValue input =
 
     let map =
         input
-        |> Array.mapi (fun index number -> (index, number |> int))
-        |> Map.ofArray
+        |> List.mapi (fun index number -> (index, number |> int))
+        |> Map.ofList
 
     Seq.initInfinite id
     |> Seq.scan (scanFunc getNewValue) (map, 0, -1)
     |> Seq.find (fun (_, index, _) -> index = -1)
-    |> (fun (_, _, stepCount) -> stepCount |> string)
+    |> fun (_, _, stepCount) -> stepCount
 
 let getResultA =
-    getResultAB (fun x -> x + 1)
+    getResultAB ((+) 1)
 
 let getResultB =
     getResultAB (fun x -> x + (if x >= 3 then -1 else 1))
 
-let getResult part (input:string[]) =
+let getResult part (input:string list) =
     match part with
     | A -> getResultA input
     | B -> getResultB input
+    |> string

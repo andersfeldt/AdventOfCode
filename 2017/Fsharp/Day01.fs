@@ -6,17 +6,16 @@ let isEqualPair (x, y) = x = y
 let getResultA (s:string) =
     let numbers =
         s.ToCharArray()
-        |> Array.toSeq
-        |> Seq.map parseChar
+        |> Array.toList
+        |> List.map parseChar
 
     let toPair (x:'t list) = x.[0], x.[1]
 
-    (Seq.last numbers) :: (Seq.toList numbers)
+    (List.last numbers) :: numbers
     |> List.windowed 2
     |> List.map toPair
     |> List.filter isEqualPair
     |> List.sumBy fst
-    |> string
 
 let getResultB (s:string) =
     let numbers =
@@ -31,10 +30,10 @@ let getResultB (s:string) =
     List.zip firstHalf secondHalf
     |> List.filter isEqualPair
     |> List.sumBy fst
-    |> (fun x -> x * 2)
-    |> string
+    |> (*) 2
 
-let getResult part (input:string[]) =
+let getResult part (input:string list) =
     match part with
     | A -> getResultA input.[0]
     | B -> getResultB input.[0]
+    |> string

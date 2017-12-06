@@ -13,18 +13,18 @@ let dayFuncs d =
     | _ -> failwith "Not implemented yet"
 
 let run (argv:string[]) =
-    let tryParseInt s =
-        match Int32.TryParse s with
-        | true, i  -> i
-        | false, _ -> failwith "Invalid day selected"
-
-    let tryParsePart (s:string) =
-        match s.ToUpper() with
-        | "A" -> A
-        | "B" -> B
-        | _   -> failwith "Invalid part selected"
-
     let day, part =
+        let tryParseInt s =
+            match Int32.TryParse s with
+            | true, i  -> i
+            | false, _ -> failwith "Invalid day selected"
+
+        let tryParsePart (s:string) =
+            match s.ToUpper() with
+            | "A" -> A
+            | "B" -> B
+            | _   -> failwith "Invalid part selected"
+
         match argv.Length with
         | 2 -> argv.[0] |> tryParseInt, argv.[1] |> tryParsePart
         | _ -> failwith "No day or part selected"
@@ -38,7 +38,10 @@ let run (argv:string[]) =
         let fileName = sprintf "Day%02i.txt" day
         let path = Path.Combine(__SOURCE_DIRECTORY__, "..", "PuzzleInputs", fileName)
         let hasContent s = not (String.IsNullOrWhiteSpace(s))
-        File.ReadAllLines(path) |> Array.filter hasContent
+
+        File.ReadAllLines(path)
+        |> List.ofArray
+        |> List.filter hasContent
 
     readPuzzleInput day
     |> selectedFunc

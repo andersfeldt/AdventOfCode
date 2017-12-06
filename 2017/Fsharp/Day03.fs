@@ -25,7 +25,6 @@ let getResultA number =
         |> List.min
 
     shortestDistanceToMidPoint + stepSize
-    |> string
 
 let getResultB number =
     let instructions =
@@ -82,9 +81,10 @@ let getResultB number =
     instructions
     |> Seq.scan scanFunc initialState
     |> Seq.find (stoppingCondition number)
-    |> (fun (_, _, value) -> value |> string)
+    |> fun (_, _, value) -> value
 
-let getResult part (input:string[]) =
+let getResult part (input:string list) =
     match part with
     | A -> getResultA (input.[0] |> int)
     | B -> getResultB (input.[0] |> int)
+    |> string
