@@ -2,7 +2,7 @@ module Day06
 
 open System
 
-let getResultA (input:string) =
+let getResultAB (input:string) =
     let initialConfig =
         input.Split([|' '; '\t'|], StringSplitOptions.RemoveEmptyEntries)
         |> List.ofArray
@@ -39,20 +39,35 @@ let getResultA (input:string) =
         |> List.zip config
         |> List.map (fun (a, b) -> a + b)
 
+    let serialize (values:int list) = String.Join(" ", values)
+
     let scanFunc (history, config, count, _) _ =
         let nextConfig = update config
-        let nextConfigSerialized = String.Join(",", nextConfig)
+        let nextConfigSerialized = serialize nextConfig
 
         match List.contains nextConfigSerialized history with
-        | true  -> (history, config, count + 1, true)
+        | true  -> (history, nextConfig, count + 1, true)
         | false -> ((nextConfigSerialized :: history), nextConfig, count + 1, false)
 
     Seq.initInfinite id
     |> Seq.scan scanFunc (List.empty<string>, initialConfig, 0, false)
     |> Seq.find (fun (_, _, _, isLoop) -> isLoop)
-    |> (fun (_, _, count, _) -> count |> string)
+    |> fun (_, lastConfig, count, _) -> (serialize lastConfig, count)
+
+let getResultA input =
+    getResultAB input
+    |> snd
+    |> string
+
+let getResultB input =
+    getResultAB input
+    |> fst
+    |> getResultAB
+    |> snd
+    |> fun i -> i - 1
+    |> string
 
 let getResult part (input:string[]) =
     match part with
     | A -> getResultA input.[0]
-    | B -> failwith "Not implemented yet"
+    | B -> getResultB input.[0]
