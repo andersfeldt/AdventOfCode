@@ -26,7 +26,12 @@ let getResultA (input:string list) =
     |> Set.toSeq
     |> Seq.exactlyOne
 
-type TowerInfo = { weight:int; isTotal:bool; subTowers:string list }
+type TowerInfo =
+    {
+        weight: int;
+        isTotal: bool;
+        subTowers: string list;
+    }
 
 let getResultB (input:string list) =
     let originalData =

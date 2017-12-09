@@ -4,11 +4,11 @@ open System.Text.RegularExpressions
 
 type Instruction =
     {
-        registerToModify:string;
-        change:int;
-        conditionalRegister:string;
-        predicate:int -> int -> bool;
-        compareValue:int;
+        registerToModify: string;
+        change: int;
+        conditionalRegister: string;
+        predicate: int -> int -> bool;
+        compareValue: int;
     }
 
 let getInstructions input =
