@@ -40,8 +40,38 @@ let getResultA input =
     |> Seq.fold folder initialState
     |> (fun s -> s.score)
 
+let getResultB input =
+    let initialState =
+        {
+            score = 0;
+            depth = 0;
+            isInsideGarbage = false;
+            ignoreNext = false;
+        }
+
+    let folder state ch =
+        let handleInsideGarbage state' ch' =
+            match ch' with
+            | '!' -> { state' with ignoreNext = true }
+            | '>' -> { state' with isInsideGarbage = false }
+            | _   -> { state' with score = state'.score + 1 }
+
+        let handleOutsideGarbage state' ch' =
+            match ch' with
+            | '<' -> { state' with isInsideGarbage = true }
+            | _   -> state'
+
+        match state.isInsideGarbage, state.ignoreNext with
+        | true, true  -> { state with ignoreNext = false }
+        | true, false -> handleInsideGarbage state ch
+        | false, _    -> handleOutsideGarbage state ch
+
+    input
+    |> Seq.fold folder initialState
+    |> (fun s -> s.score)
+
 let getResult part (input:string list) =
     match part with
     | A -> getResultA input.[0]
-    | B -> failwith "Not implemented yet"
+    | B -> getResultB input.[0]
     |> string
