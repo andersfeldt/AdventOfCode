@@ -3,16 +3,17 @@ open System.IO
 
 let dayFuncs d =
     match d with
-    | 1 -> Day01.getResult
-    | 2 -> Day02.getResult
-    | 3 -> Day03.getResult
-    | 4 -> Day04.getResult
-    | 5 -> Day05.getResult
-    | 6 -> Day06.getResult
-    | 7 -> Day07.getResult
-    | 8 -> Day08.getResult
-    | 9 -> Day09.getResult
-    | _ -> failwith "Not implemented yet"
+    | 1  -> Day01.getResult
+    | 2  -> Day02.getResult
+    | 3  -> Day03.getResult
+    | 4  -> Day04.getResult
+    | 5  -> Day05.getResult
+    | 6  -> Day06.getResult
+    | 7  -> Day07.getResult
+    | 8  -> Day08.getResult
+    | 9  -> Day09.getResult
+    | 10 -> Day10.getResult
+    | _  -> failwith "Not implemented yet"
 
 let run (argv:string[]) =
     let day, part =
