@@ -22,6 +22,7 @@ let dayFuncs d =
     | 17 -> Day17.getResult
     | 18 -> Day18.getResult
     | 19 -> Day19.getResult
+    | 23 -> Day23.getResult
     | _  -> failwith "Not implemented yet"
 
 let run (argv:string[]) =
