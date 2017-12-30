@@ -4,68 +4,49 @@ open System
 
 type Particle =
     {
-        px: int64;
-        py: int64;
-        pz: int64;
-        vx: int64;
-        vy: int64;
-        vz: int64;
-        ax: int64;
-        ay: int64;
-        az: int64;
+        position:     int64 * int64 * int64;
+        velocity:     int64 * int64 * int64;
+        acceleration: int64 * int64 * int64;
     }
 
+let parseParticles input =
+    let parse (line:string) =
+        let values =
+            line.Split("pva, <=>".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)
+            |> List.ofArray
+            |> List.map int64
+        {
+            position = values.[0], values.[1], values.[2];
+            velocity = values.[3], values.[4], values.[5];
+            acceleration = values.[6], values.[7], values.[8];
+        }
+    List.map parse input
+
+let update particles =
+    let (++) (a1, a2, a3) (b1, b2, b3) =
+        a1 + b1, a2 + b2, a3 + b3
+    let updateSingle particle =
+        { particle with
+            velocity = particle.velocity ++ particle.acceleration;
+            position = particle.position ++ particle.velocity ++ particle.acceleration;
+        }
+    List.map updateSingle particles
+
 let getResultA (input:string list) =
-    let parseParticles input =
-        let parse (line:string) =
-            let values =
-                line.Split("pva, <=>".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)
-                |> List.ofArray
-                |> List.map int64
-            {
-                px = values.[0];
-                py = values.[1];
-                pz = values.[2];
-                vx = values.[3];
-                vy = values.[4];
-                vz = values.[5];
-                ax = values.[6];
-                ay = values.[7];
-                az = values.[8];
-            }
-
-        input
-        |> List.map parse
-
     let initialParticles = parseParticles input
 
     let folder (particles, currentClosest, ticksSinceChangeOfClosest) _ =
-        let update particles =
-            let update' particle =
-                { particle with
-                    px = particle.px + particle.vx + particle.ax;
-                    py = particle.py + particle.vy + particle.ay;
-                    pz = particle.pz + particle.vz + particle.az;
-                    vx = particle.vx + particle.ax;
-                    vy = particle.vy + particle.ay;
-                    vz = particle.vz + particle.az;
-                }
-            particles
-            |> List.map update'
-
         let getDistance particle =
-            [particle.px; particle.py; particle.pz]
-            |> List.sumBy abs
-
+            let x, y, z = particle.position
+            List.sumBy abs [x; y; z]
         let updatedParticles = update particles
-        let distances = updatedParticles |> List.map getDistance
-        let minDistance = distances |> List.min
-        let newClosest = distances |> List.findIndex (fun d -> d = minDistance)
+        let distances = List.map getDistance updatedParticles
+        let minDistance = List.min distances
+        let newClosest = List.findIndex (fun d -> d = minDistance) distances
         let newTicksSinceChangeOfClosest =
             if currentClosest = newClosest
                 then ticksSinceChangeOfClosest + 1
                 else 0
-
         updatedParticles, newClosest, newTicksSinceChangeOfClosest
 
     let ``arbitrarily chosen value for "long term"`` = 1000
@@ -75,8 +56,35 @@ let getResultA (input:string list) =
     |> Seq.find (fun (_, _, x) -> x > ``arbitrarily chosen value for "long term"``)
     |> (fun (_, x, _) -> x)
 
+let getResultB (input:string list) =
+    let initialParticles = parseParticles input
+
+    let folder (particles, ticksSinceLastCollision) _ =
+        let updatedParticles = update particles
+        let collisionPositions =
+            updatedParticles
+            |> List.groupBy (fun p -> p.position)
+            |> List.filter (fun (_, particles) -> Seq.length particles > 1)
+            |> List.map fst
+
+        if List.isEmpty collisionPositions
+            then updatedParticles, ticksSinceLastCollision + 1
+            else
+                let particlesNotColliding =
+                    updatedParticles
+                    |> List.filter (fun p -> collisionPositions |> List.contains p.position |> not)
+                particlesNotColliding, 0
+
+    let ``arbitrarily chosen value for "long term"`` = 1000
+
+    Seq.initInfinite id
+    |> Seq.scan folder (initialParticles, 0)
+    |> Seq.find (snd >> ((<) ``arbitrarily chosen value for "long term"``))
+    |> fst
+    |> List.length
+
 let getResult part (input:string list) =
     match part with
     | A -> getResultA input
-    | B -> failwith "Not implemented yet"
+    | B -> getResultB input
     |> string
