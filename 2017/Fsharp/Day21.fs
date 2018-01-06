@@ -2,7 +2,7 @@ module Day21
 
 open System
 
-let getResultA (input:string list) =
+let getResultAB (input:string list) numberOfIterations =
     let getSize (count:int) = count |> float |> sqrt |> int
 
     let parseRules input =
@@ -70,7 +70,6 @@ let getResultA (input:string list) =
         |> List.collect (fun (x, y, str) -> stringToSquare rules.[str] x y)
         |> Map.ofList
 
-    let numberOfIterations = 5
     let initialString = ".#...####"
     let initialMap =
         stringToSquare initialString 0 0
@@ -83,8 +82,14 @@ let getResultA (input:string list) =
     |> List.filter (fun ch -> ch = '#')
     |> List.length
 
+let getResultA (input:string list) =
+    getResultAB input 5
+
+let getResultB (input:string list) =
+    getResultAB input 18
+
 let getResult part (input:string list) =
     match part with
     | A -> getResultA input
-    | B -> failwith "Not implemented yet"
+    | B -> getResultB input
     |> string
