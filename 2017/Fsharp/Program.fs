@@ -24,6 +24,7 @@ let dayFuncs d =
     | 19 -> Day19.getResult
     | 20 -> Day20.getResult
     | 21 -> Day21.getResult
+    | 22 -> Day22.getResult
     | 23 -> Day23.getResult
     | _  -> failwith "Not implemented yet"
 
