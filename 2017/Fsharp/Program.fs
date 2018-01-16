@@ -1,6 +1,26 @@
 ﻿open System
 open System.IO
 
+let codeStatistics =
+    let name file = Path.GetFileNameWithoutExtension(file)
+    let linesOfCode file = File.ReadAllLines(file) |> Array.length
+    let fileSize file = FileInfo(file).Length
+
+    let whitespaceProportion file =
+        let isWhitespace c = [' '; '\n'; '\r'; '\t'] |> List.contains c
+        let floatLength x = x |> List.length |> float
+        File.ReadAllText(file)
+        |> Seq.toList
+        |> List.partition isWhitespace
+        |> (fun (a, b) -> floatLength a, floatLength b)
+        |> (fun (a, b) -> (100.0 * a / (a + b)) |> int)
+
+    let details file = name file, linesOfCode file, fileSize file, whitespaceProportion file
+    let show (day, lineCount, size, whitespaces) = sprintf "%s: %8i lines, %10i bytes, %8i%% whitespace" day lineCount size whitespaces
+
+    Directory.EnumerateFiles(__SOURCE_DIRECTORY__, "Day*.fs")
+    |> Seq.map (details >> show)
+
 let dayFuncs d =
     match d with
     | 1  -> Day01.getResult
@@ -68,7 +88,9 @@ let run (argv:string[]) =
 [<EntryPoint>]
 let main argv =
     try
-        run argv
+        match argv with
+        | [|s|] when s = "stats" -> codeStatistics |> Seq.iter (printfn "%s")
+        | _                      -> run argv
     with
     | Failure message                -> printfn "%s" message
     | :? FileNotFoundException as ex -> printfn "%s" ex.Message
