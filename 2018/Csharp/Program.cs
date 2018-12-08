@@ -59,6 +59,7 @@ namespace AdventOfCode.Y2018.Csharp
                     case 5: return new Day05(content); //collapsing polymer
                     case 6: return new Day06(content); //Manhattan distances and largest areas
                     case 7: return new Day07(content); //ordered instructions (DAG)
+                    case 8: return new Day08(content); //nodes with metadata
 
                     default:
                         throw new NotImplementedException();
