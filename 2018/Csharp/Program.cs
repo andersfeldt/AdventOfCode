@@ -61,6 +61,7 @@ namespace AdventOfCode.Y2018.Csharp
                     case 7: return new Day07(content); //ordered instructions (DAG)
                     case 8: return new Day08(content); //nodes with metadata
                     case 9: return new Day09(content); //marbles in circular list
+                    case 10: return new Day10(content); //message in the sky
 
                     default:
                         throw new NotImplementedException();
