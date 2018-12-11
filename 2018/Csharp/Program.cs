@@ -62,6 +62,7 @@ namespace AdventOfCode.Y2018.Csharp
                     case 8: return new Day08(content); //nodes with metadata
                     case 9: return new Day09(content); //marbles in circular list
                     case 10: return new Day10(content); //message in the sky
+                    case 11: return new Day11(content); //fuel cell grid
 
                     default:
                         throw new NotImplementedException();
