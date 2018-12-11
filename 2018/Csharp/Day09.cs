@@ -72,10 +72,122 @@ namespace AdventOfCode.Y2018.Csharp
         public string SolveB()
         {
             var (numberOfPlayers, valueOfLastMarble) = Parse(m_input);
+            valueOfLastMarble *= 100;
 
-            //Very slow solution... :(
+            var scoresByPlayer = Enumerable.Range(0, numberOfPlayers).ToDictionary(i => i, _ => 0L);
+            var currentPlayer = 1;
 
-            return GetMaxScore(numberOfPlayers, 100 * valueOfLastMarble).ToString();
+            var ring = new Ring(0);
+
+            for (var nextMarble = 1; nextMarble <= valueOfLastMarble; nextMarble++)
+            {
+                if (nextMarble % 23 == 0)
+                {
+                    ring.Step(-7);
+                    scoresByPlayer[currentPlayer] += nextMarble + ring.CurrentValue;
+                    ring.Remove();
+                }
+                else
+                {
+                    ring.Step(1);
+                    ring.Insert(nextMarble);
+                }
+
+                currentPlayer = GetNextPlayer(numberOfPlayers, currentPlayer);
+            }
+
+            return scoresByPlayer.Values.Max().ToString();
+        }
+
+        private class Ring
+        {
+            public Ring(int value)
+            {
+                var item = new Item(value);
+
+                item.Previous = item;
+                item.Next = item;
+
+                CurrentItem = item;
+            }
+
+            private Item CurrentItem { get; set; }
+
+            public int CurrentValue => CurrentItem.Value;
+
+            public void Step(int steps)
+            {
+                while (steps > 0)
+                {
+                    CurrentItem = CurrentItem.Next;
+                    steps--;
+                }
+
+                while (steps < 0)
+                {
+                    CurrentItem = CurrentItem.Previous;
+                    steps++;
+                }
+            }
+
+            public void Insert(int value)
+            {
+                var newItem = new Item(value)
+                {
+                    Previous = CurrentItem,
+                    Next = CurrentItem.Next
+                };
+
+                newItem.Previous.Next = newItem;
+                newItem.Next.Previous = newItem;
+
+                CurrentItem = newItem;
+            }
+
+            public void Remove()
+            {
+                var previous = CurrentItem.Previous;
+                var next = CurrentItem.Next;
+
+                previous.Next = next;
+                next.Previous = previous;
+
+                CurrentItem = next;
+            }
+
+            public override string ToString()
+            {
+                if (CurrentItem.Next == CurrentItem)
+                {
+                    return CurrentValue.ToString();
+                }
+
+                var values = new List<int>();
+                var loopItem = CurrentItem;
+
+                do
+                {
+                    values.Add(loopItem.Value);
+                    loopItem = loopItem.Next;
+                } while (loopItem != CurrentItem);
+
+                return string.Join(" - ", values);
+            }
+
+            private class Item
+            {
+                public Item(int value)
+                {
+                    Value = value;
+                }
+
+                public int Value { get; }
+
+                public Item Previous { get; set; }
+                public Item Next { get; set; }
+
+                public override string ToString() => Value.ToString();
+            }
         }
     }
 }
