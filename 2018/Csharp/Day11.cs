@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -66,7 +67,50 @@ namespace AdventOfCode.Y2018.Csharp
 
         public string SolveB()
         {
-            throw new System.NotImplementedException();
+            const int gridSize = 300;
+
+            var grid = CreateGrid(gridSize, serialNumber: m_input);
+
+            var largestTotalPowerFound = 0;
+            var largestSquareId = string.Empty;
+
+            foreach (var (startX, startY) in GetAllPositions(1, 1, gridSize))
+            {
+                var currentSubGridPower = 0;
+                var maxSubGridSize = gridSize + 1 - Math.Max(startX, startY);
+
+                for (var size = 1; size <= maxSubGridSize; size++)
+                {
+                    var sum = GetEdgePositions(startX, startY, size)
+                        .Select(p => grid[p])
+                        .Sum();
+                    currentSubGridPower += sum;
+
+                    if (currentSubGridPower > largestTotalPowerFound)
+                    {
+                        largestTotalPowerFound = currentSubGridPower;
+                        largestSquareId = $"{startX},{startY},{size}";
+                    }
+                }
+            }
+
+            return largestSquareId;
+        }
+
+        private IEnumerable<(int X, int Y)> GetEdgePositions(int startX, int startY, int size)
+        {
+            var endX = startX + size - 1;
+            var endY = startY + size - 1;
+
+            var horizontal = Enumerable
+                .Range(startX, size)
+                .Select(x => (x, endY));
+
+            var vertical = Enumerable
+                .Range(startY, size - 1)
+                .Select(y => (endX, y));
+
+            return horizontal.Concat(vertical);
         }
     }
 }
