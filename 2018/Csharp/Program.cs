@@ -42,11 +42,16 @@ namespace AdventOfCode.Y2018.Csharp
             var content = File.ReadAllLines(GetPath(dayNumber));
             var day = GetDay();
 
+            var startTime = DateTime.Now;
+
             var answer = problem == Problem.A
                 ? day.SolveA()
                 : day.SolveB();
 
+            var endTime = DateTime.Now;
+
             Console.WriteLine(answer);
+            Console.WriteLine($"(Elapsed time: {endTime - startTime})");
 
             IDay GetDay()
             {
