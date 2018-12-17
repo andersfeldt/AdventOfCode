@@ -68,6 +68,9 @@ namespace AdventOfCode.Y2018.Csharp
                     case 9: return new Day09(content); //marbles in circular list
                     case 10: return new Day10(content); //message in the sky
                     case 11: return new Day11(content); //fuel cell grid
+                    case 12: return new Day12(content); //pots and plants
+                    case 13: return new Day13(content); //colliding carts
+                    case 14: return new Day14(content); //chocolate recipes
 
                     default:
                         throw new NotImplementedException();
