@@ -71,6 +71,7 @@ namespace AdventOfCode.Y2018.Csharp
                     case 12: return new Day12(content); //pots and plants
                     case 13: return new Day13(content); //colliding carts
                     case 14: return new Day14(content); //chocolate recipes
+                    case 16: return new Day16(content); //operations and registers
 
                     default:
                         throw new NotImplementedException();
