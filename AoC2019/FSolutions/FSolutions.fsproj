@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <Compile Include="PuzzleInput.fs" />
+    <Compile Include="Day01.fs" />
   </ItemGroup>
 
 </Project>
