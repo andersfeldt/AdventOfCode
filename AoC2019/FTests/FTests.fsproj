@@ -11,6 +11,7 @@
     <Compile Include="Tests01.fs" />
     <Compile Include="Tests03.fs" />
     <Compile Include="Tests04.fs" />
+    <Compile Include="Tests06.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
